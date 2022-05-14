@@ -1,0 +1,36 @@
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+
+#Read in data from tweet_emotions csv
+df = pd.read_csv('tweet_emotions.csv')
+
+#Word lists for identifying emotion words
+haste = ["hurry", "hurrying", "soon", "rapidly", "rapid", "quick", "quickly", "wait", "waiting", "prompt", "promptly", "hustle", "hustling", "timely", "timing", "time", "clock", "rush", "rushing", "scurry", "scurrying", "dash", "dashing", "scramble", "scrambling"]
+threatening = ["vulnerability","attack","cannot","block","risk","failure","invalidate","suspend","revoke","fail","vulnerable","fail","suscpetible","intruder","suspicious","breach","cancel","lose","lost","void","expelled","destroy","steal","pirate","sensitive","exposed","defenseless","weak","unguarded","remove","erase","harm","infiltrate","strike","intercept","compromise","jeopardize","decline","confidential"]
+happy = ['achieved' , 'achievement' , 'affection' , 'amazing' , 'angel' , 'angels' , 'attraction' , 'attractive' , 'award' , 'awesome' , 'b-day' , 'bday' , 'beach' , 'beauty' , 'billion' , 'birthday' , 'blessed' , 'blessings' , 'bonus' , 'bright' , 'brilliant' , 'butterflies' , 'butterfly' , 'celebrate' , 'celebrated' , 'celebrating' , 'celebration' , 'champion' , 'cheers' , 'cherish' , 'chocolate' , 'comedy' , 'comfort' , 'congrats' , 'congratulations' , 'cute' , 'cutest' , 'delicious' , 'delight' , 'diamond' , 'diamonds' , 'earn' , 'earnings' , 'easier' , 'enjoy' , 'enjoyed' , 'enjoying' , 'entertaining' , 'entertainment' , 'excellent' , 'excited' , 'excitement' , 'exciting' , 'extraordinary' , 'faithful' , 'families' , 'family' , 'fantastic' , 'feast' , 'festival' , 'finest' , 'flower' , 'flowers' , 'free' , 'freedom' , 'friend' , 'friendly' , 'friends' , 'friendship' , 'fun' , 'funniest' , 'funny' , 'genius' , 'gift' , 'gifts' , 'glad' , 'glorious' , 'glory' , 'gold' , 'goodness' , 'great' , 'haha' , 'hah', 'ha' , 'hahahaha' , 'hahahahaha' , 'handsome' , 'happiness' , 'happy' , 'healthy' , 'heaven' , 'heavens' , 'hero' , 'hilarious' , 'holiday' , 'holidays' , 'honesty' , 'honour' , 'hug' , 'hugs' , 'humor' , 'income' , 'interesting' , 'internet' , 'joke' , 'jokes' , 'joy' , 'kiss' , 'kissed' , 'kisses' , 'kissing' , 'laugh' , 'laughed' , 'laughing' , 'laughs' , 'love' , 'loved' , 'lovers' , 'loves' , 'loving' , 'lucky' , 'merry' , 'miracle' , 'mom' , 'moonlight' , 'mother' , 'mother’s' , 'music' , 'optimistic' , 'outstanding' , 'paradise' , 'party' , 'peace' , 'peaceful' , 'peacefully' , 'pleasant' , 'pleasure' , 'positive' , 'praise' , 'prize' , 'profit' , 'profits' , 'promotion' , 'puppy' , 'rainbow' , 'rainbows' , 'relax' , 'relaxing' , 'rich' , 'romance' , 'romantic' , 'roses' , 'shines' , 'sky' , 'smart' , 'smile' , 'smiled' , 'smiles' , 'smiling' , 'song' , 'splendid' , 'succeed' , 'succeeded' , 'succeeding' , 'success' , 'successful' , 'successfully' , 'sun' , 'sunlight' , 'sunshine' , 'super' , 'sweet', 'sweetest' , 'sweetheart' , 'sweetness' , 'tasty' , 'vacation' , 'victories' , 'victory' , 'weekend' , 'weekends' , 'win' , 'winner' , 'winners' , 'winning' , 'won' , 'wonderful']
+sad = ["upset", "cry", "worry", "sorry", "heartbroken", "melancholy", "somber", "sorrow", "sorry", "unhappy", "blue", "depressed", "despair", "despondent", "down", "distress", "gloomy", "glum", "grief", "hurt", "low", "morbid", "morose", "troubled", "weep", "bad", "dark", "dismal", "miserable", "pathetic", "pitiful", "tragic", "regret", "tearful", "discouraging", "disheartening", "mournful", "dull"]
+
+
+global emotionArray
+emotionArray = [haste, threatening, happy, sad]
+
+#Clean data by removing punctuation and stopwords
+def text_process(message):
+    nopunc = [char for char in message if char not in string.punctuation]
+    nopunc = ''.join(nopunc)
+    return [word for word in nopunc.split() if word.lower() not in stopwords.words('english')]
+
+def analyze_sentiment(message):
+    resultsArray = [[0, []],[0, []],[0, []],[0, []]]
+    for x in message:
+        for y in range(len(emotionArray)):
+            if x.lower() in emotionArray[y]:
+                resultsArray[y][0]+=1
+                resultsArray[y][1].append(x)
+    return resultsArray
+
+def main(message):
+    message = text_process(message)
+    res = analyze_sentiment(message)
+    return res
